@@ -5,9 +5,9 @@
   # 팀프로젝트 attiWell
 ![logo3](https://github.com/lee411806/AttiWell/assets/132039579/0cc1d267-c29c-4ff6-9115-ffba0ef5971b)
 
-  attiWell은 <strong>아띠(순우리말 : 친한친구)</strong>와 <strong>웰(well:건강한/건강에 좋은)</strong>을 결합한 네이밍입니다.
+  <!-- attiWell은 <strong>아띠(순우리말 : 친한친구)</strong>와 <strong>웰(well:건강한/건강에 좋은)</strong>을 결합한 네이밍입니다.
 
-  `건강을 위해, 친한 친구 같이 자주 찾게 되는 건강식` 이란 뜻입니다.
+  `건강을 위해, 친한 친구 같이 자주 찾게 되는 건강식` 이란 뜻입니다. -->
 
 </div>
 
@@ -30,13 +30,13 @@ https://docs.google.com/presentation/d/1LCFiftKx_s75g7L0-daYIAWMItezOkuvvGjUwW-M
 
 
 ## 👨‍💻조원
-김영광 : 로그인, 회원가입, 상세페이지
+조원1 : 로그인, 회원가입, 상세페이지
 
 이재용 : 장바구니, 관리자(회원, 상품, 주문) , 깃허브
 
-정소은 : 메인, 상품리스트, 내 정보, aws배포
+조원2 : 메인, 상품리스트, 내 정보, aws배포
   
-유한비 : 주문, PPT
+조원3 : 주문, PPT
 
 <br><br>
 
