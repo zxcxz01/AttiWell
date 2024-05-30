@@ -30,7 +30,7 @@ https://docs.google.com/presentation/d/1LCFiftKx_s75g7L0-daYIAWMItezOkuvvGjUwW-M
 
 
 ## 👨‍💻조원
-김영광 : 로그인, 회원가입, 상세페이지
+김영광 : 로그인, 회원가입, 상세페이지, 전체적인 CSS
 
 이재용 : 장바구니, 관리자(회원, 상품, 주문) , 깃허브
 
