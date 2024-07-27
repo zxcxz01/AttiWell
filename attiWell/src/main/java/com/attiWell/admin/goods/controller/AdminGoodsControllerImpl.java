@@ -29,13 +29,17 @@ import com.attiWell.goods.vo.GoodsVO;
 import com.attiWell.goods.vo.ImageFileVO;
 import com.attiWell.member.vo.MemberVO;
 
+//컨트롤러 빈에 이름지정
 @Controller("adminGoodsController")
 @RequestMapping(value="/admin/goods")
 public class AdminGoodsControllerImpl extends BaseController  implements AdminGoodsController{
 	private static final String CURR_IMAGE_REPO_PATH = "C:\\shopping\\file_repo";
+	
 	@Autowired
 	private AdminGoodsService adminGoodsService;
 	
+	
+	 //@RequestParam 어노테이션은 HTTP 요청 파라미터를 컨트롤러 메소드의 매개변수에 매핑하는 데 사용
 	@RequestMapping(value="/adminGoodsMain.do" ,method={RequestMethod.POST,RequestMethod.GET})
 	public ModelAndView adminGoodsMain(@RequestParam Map<String, String> dateMap,
 			                           HttpServletRequest request, HttpServletResponse response)  throws Exception {
@@ -45,11 +49,14 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		session=request.getSession();
 		session.setAttribute("side_menu", "admin_mode"); //마이페이지 사이드 메뉴로 설정한다.
 		
+		
+		 // admingoods.jsp 에서 날짜 데이터 javascript로 url로 controller에 전달
 		String fixedSearchPeriod = dateMap.get("fixedSearchPeriod");
 		String section = dateMap.get("section");
 		String pageNum = dateMap.get("pageNum");
 		String beginDate=null,endDate=null;
 		
+		//basecontroller에 있는 calcSearchPeriod에 넣어줘 날짜를 String으로 나눈다. basecontroller는 추후에 블로그에서 다룬다.
 		String [] tempDate=calcSearchPeriod(fixedSearchPeriod).split(",");
 		beginDate=tempDate[0];
 		endDate=tempDate[1];
@@ -67,45 +74,57 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		condMap.put("pageNum",pageNum);
 		condMap.put("beginDate",beginDate);
 		condMap.put("endDate", endDate);
-		List<GoodsVO> newGoodsList=adminGoodsService.listNewGoods(condMap);
-		mav.addObject("newGoodsList", newGoodsList);
 		
-		String beginDate1[]=beginDate.split("-");
-		String endDate2[]=endDate.split("-");
-		mav.addObject("beginYear",beginDate1[0]);
-		mav.addObject("beginMonth",beginDate1[1]);
-		mav.addObject("beginDay",beginDate1[2]);
-		mav.addObject("endYear",endDate2[0]);
-		mav.addObject("endMonth",endDate2[1]);
-		mav.addObject("endDay",endDate2[2]);
 		
-		mav.addObject("section", section);
-		mav.addObject("pageNum", pageNum);
-		return mav;
-		
+		// GoodsVO 리스트를 만들어서 comdMap을 넣어 query문 갔다오게 하고 mav객체에 
+        //넣어준후 반환, 추가로 위에서 만든 변수들 모두 mav객체에 넣어준 후 반환 -> 
+        // jsp에서 확인가능
+			List<GoodsVO> newGoodsList=adminGoodsService.listNewGoods(condMap);
+			mav.addObject("newGoodsList", newGoodsList);
+			
+			String beginDate1[]=beginDate.split("-");
+			String endDate2[]=endDate.split("-");
+			
+			// model 객체에 데이터 담아서 view로 쏴준다.
+			mav.addObject("beginYear",beginDate1[0]);
+			mav.addObject("beginMonth",beginDate1[1]);
+			mav.addObject("beginDay",beginDate1[2]);
+			mav.addObject("endYear",endDate2[0]);
+			mav.addObject("endMonth",endDate2[1]);
+			mav.addObject("endDay",endDate2[2]);
+			
+			mav.addObject("section", section);
+			mav.addObject("pageNum", pageNum);
+			return mav;
+			
 	}
 	
 
-	
+	//MultipartHttpServletRequest: 파일 업로드를 처리하기 위해 사용되는 특수한 HttpServletRequest 이다.
 	@RequestMapping(value="/addNewGoods.do" ,method={RequestMethod.POST})
 	public ResponseEntity addNewGoods(MultipartHttpServletRequest multipartRequest, HttpServletResponse response)  throws Exception {
+		  
+		
+		//요청과 응답의 인코딩을 UTF-8로 설정합니다. --> 다양한 문자를 올바르게 처리하여 
+		// 문자깨짐 방지
 		multipartRequest.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=UTF-8");
 		String imageFileName=null;
 		
 		Map newGoodsMap = new HashMap();
 		Enumeration enu=multipartRequest.getParameterNames();
+		//enu에 요소가 더있는지 확인 있으면 map에 key,value값 넣어주기
 		while(enu.hasMoreElements()){
 			String name=(String)enu.nextElement();
 			String value=multipartRequest.getParameter(name);
 			newGoodsMap.put(name,value);
 		}
-		
+		  //세션 생성해서 세션 객체에 담긴 memberinfo로 저장된 객체를 가져온다.
 		HttpSession session = multipartRequest.getSession();
 		MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
 		String reg_id = memberVO.getMember_id();
 		
-		
+		// basecontroller의 upload 메서드 가져옴
 		List<ImageFileVO> imageFileList =upload(multipartRequest);
 		if(imageFileList!= null && imageFileList.size()!=0) {
 			for(ImageFileVO imageFileVO : imageFileList) {
@@ -116,6 +135,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		
 		String message = null;
 		ResponseEntity resEntity = null;
+		
+		//http요청 및 응답헤더 다룸
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		try {
@@ -125,6 +146,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 					imageFileName = imageFileVO.getFileName();
 					File srcFile = new File(CURR_IMAGE_REPO_PATH+"\\"+"temp"+"\\"+imageFileName);
 					File destDir = new File(CURR_IMAGE_REPO_PATH+"\\"+goods_id);
+					//파일 이미지 경로를 temp에서 goods_id인 폴더로 옮김
 					FileUtils.moveFileToDirectory(srcFile, destDir,true);
 				}
 			}
@@ -133,6 +155,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			message +=" location.href='"+multipartRequest.getContextPath()+"/admin/goods/addNewGoodsForm.do';";
 			message +=("</script>");
 		}catch(Exception e) {
+			// 예외가 발생했을 때 동일한 조건의 temp 폴더에 저장된 파일들을 삭제
+			//이를 통해 파일 업로드 과정에서 문제가 발생하면 temp 폴더에 남아 있는 임시 파일들을 정리
 			if(imageFileList!=null && imageFileList.size()!=0) {
 				for(ImageFileVO  imageFileVO:imageFileList) {
 					imageFileName = imageFileVO.getFileName();
@@ -147,10 +171,15 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			message +=("</script>");
 			e.printStackTrace();
 		}
+		
+		//ResponseEntity는 응답 본문, 응답 헤더, 상태 코드를 포함하는 객체로
+		//이를 통해 서버에서 클라이언트로 다양한 형태의 응답을 보낼 수 있다. 
 		resEntity =new ResponseEntity(message, responseHeaders, HttpStatus.OK);
 		return resEntity;
 	}
 	
+	
+	//수정 폼 보여줌 modifygoodsform.jsp의 controller 역할
 	@RequestMapping(value="/modifyGoodsForm.do" ,method={RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView modifyGoodsForm(@RequestParam("goods_id") int goods_id,
 			                            HttpServletRequest request, HttpServletResponse response)  throws Exception {
@@ -163,6 +192,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		return mav;
 	}
 	
+	
+	// 실제 db 상품정보 수정
 	@RequestMapping(value="/modifyGoodsInfo.do" ,method={RequestMethod.POST})
 	public ResponseEntity modifyGoodsInfo( @RequestParam("goods_id") String goods_id,
 			                     @RequestParam("attribute") String attribute,
@@ -183,9 +214,10 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		return resEntity;
 	}
 	
-
+	//이미지 수정버튼 누르면 이미지 수정됨
 	@RequestMapping(value="/modifyGoodsImageInfo.do" ,method={RequestMethod.POST})
 	public void modifyGoodsImageInfo(MultipartHttpServletRequest multipartRequest, HttpServletResponse response)  throws Exception {
+		//이미지 수정되면 콘솔에 뜸
 		System.out.println("modifyGoodsImageInfo");
 		multipartRequest.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
@@ -238,11 +270,14 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		
 	}
 	
-
+	
+	
+	//이미지 추가하고 버튼 누르면 이미지 추가됨
 	@Override
 	@RequestMapping(value="/addNewGoodsImage.do" ,method={RequestMethod.POST})
 	public void addNewGoodsImage(MultipartHttpServletRequest multipartRequest, HttpServletResponse response)
 			throws Exception {
+		//추가하면 콜솔에 뜸
 		System.out.println("addNewGoodsImage");
 		multipartRequest.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
@@ -290,7 +325,9 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			e.printStackTrace();
 		}
 	}
-
+	
+	
+	//DB에서  이미지 정보삭제, 파일시스템에서 이미지파일 삭제
 	@Override
 	@RequestMapping(value="/removeGoodsImage.do" ,method={RequestMethod.POST})
 	public void  removeGoodsImage(@RequestParam("goods_id") int goods_id,
@@ -307,7 +344,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		}
 	}
 	
-	
+	// db에서 상품정보 삭제, 상품삭제 후 리다이렉트
 	@Override
 	@RequestMapping(value="/removeGoods.do" ,method={RequestMethod.GET})
 	public void removeGoods(@RequestParam("goods_id") int goods_id,
