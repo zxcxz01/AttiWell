@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="AttiWell">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/attiWell/src/main/java"/>
+        <property name="context-root" value="AttiWell"/>
+        <property name="java-output-path" value="/AttiWell/attiWell/target/classes"/>
+    </wb-module>
+</project-modules>
