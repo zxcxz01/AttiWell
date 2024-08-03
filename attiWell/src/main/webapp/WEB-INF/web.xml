@@ -10,6 +10,11 @@
 			<param-name>encoding</param-name>
 			<param-value>UTF-8</param-value>
 		</init-param>
+		<!-- 위는 요청 처리 응답 인코딩 처리도 해줌 (추가적인 수정)  -->
+		<init-param>
+        <param-name>forceEncoding</param-name>
+        <param-value>true</param-value>
+    </init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
@@ -20,11 +25,11 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/spring/mybatis-context.xml</param-value>
 	</context-param>
-	<!-- context-param에서 지정한 설정 파일 로드 -->
+	<!-- context-param(spring context설정) 에서 지정한 설정 파일 로드 -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	<!-- 4. dispatcherServlet 설정 spring mvc 핵심 서블릿 -> dispatcher 설정파일 servlet-context.xml설정 
+	<!-- 3. dispatcherServlet 설정 spring mvc 핵심 서블릿 -> dispatcher 설정파일 servlet-context.xml설정 
 		경로 : / -> 모든 경로에 dispatcher servlet 적용 load on start : 서블릿들 사이에서 첫번째로 초기화 -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>

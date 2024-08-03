@@ -122,6 +122,7 @@
 </head>
 
 <BODY>
+<!-- enctype="multipart/form-data 로 설정되어있어 파일업로드와 함께 일반적인 폼 데이터를 서버로 전송 가능 -->
 <form action="${contextPath}/admin/goods/addNewGoods.do" method="post"  enctype="multipart/form-data">
       <!-- <h1>새상품 등록창</h1> -->
        <!-- <p class="h2">새상품 등록창</p> -->
@@ -213,7 +214,8 @@
     <table>
     <tr>
            <td align=center>
-            <!--   <input  type="submit" value="상품 등록하기"> --> 
+            <!--   <input  type="submit" value="상품 등록하기">  -->
+            <!-- 중요!!!! input, select 태크에 입력한 값들은 action="${contextPath}/admin/goods/addNewGoods.do" 로 post로 전달된다.--> 
               <input  type="button" value="상품 등록하기"  onClick="fn_add_new_goods(this.form)">
            </td>
          </tr>

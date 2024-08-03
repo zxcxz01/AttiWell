@@ -111,9 +111,12 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		response.setContentType("text/html; charset=UTF-8");
 		String imageFileName=null;
 		
+		
 		Map newGoodsMap = new HashMap();
+		//multipartRequest.getParameterNames 반환 형태 -> enumeration(열거)
 		Enumeration enu=multipartRequest.getParameterNames();
 		//enu에 요소가 더있는지 확인 있으면 map에 key,value값 넣어주기
+		//우선 그럼 여기서 addnewgood.jsp form에서 보낸 select, option , 이미지  key value값 다들어가 있다.
 		while(enu.hasMoreElements()){
 			String name=(String)enu.nextElement();
 			String value=multipartRequest.getParameter(name);
@@ -140,6 +143,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		try {
+			//위에서 form에서 담아뒀던 key value값들 전부 서비스 로 가게 해줌
 			int goods_id = adminGoodsService.addNewGoods(newGoodsMap);
 			if(imageFileList!=null && imageFileList.size()!=0) {
 				for(ImageFileVO  imageFileVO:imageFileList) {

@@ -10,8 +10,12 @@
 	<!-- 2.정적 파일이랑 Compile할 파일이랑 분리해서 효율적으로 요청을 처리 예를들면 정적요소들을 변경할 때면 서버실행 할 
 		필요 없음 -->
 	<resources mapping="/resources/**" location="/resources/" />
+	
+	
+	
 	<!-- 3.TilesConfigurer은 definition이라는 속성을 이용해 tiles파일 위치를 지정해준다. 타일즈의 설정파일들의 
 		위치를 지정한다. definitions는 타일즈의 정의파일들의 위치를 나타낸다. -->
+		
 	<beans:bean id="tilesConfigurer"
 		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
 		<beans:property name="definitions">
@@ -19,10 +23,14 @@
 				<beans:value>classpath:tiles/*.xml</beans:value>
 			</beans:list>
 		</beans:property>
+		
+		
 		<!-- 타일즈 뷰에서 고정된 viewpage의 데이터를 가져와 빈으로 만들어 필요할때 효과적으로 불러올 수 있다. -->
 		<beans:property name="preparerFactoryClass"
 			value="org.springframework.web.servlet.view.tiles2.SpringBeanPreparerFactory" />
 	</beans:bean>
+	
+	
 	<!-- UrlBasedViewResolver클래스는 URL기반의 뷰를 해석하고 Rendering해준다. (viewResolver 
 		: 내보낼 view를 결정하고 해당 뷰를 렌더링한다.) TilewView : 뷰 리졸버가 타일뷰를 사용하겠다. 쉽게 말해 URL기반의 
 		뷰 리졸버가 URL을 사용하여 타일즈뷰를 사용하고 나타내겠다는 말이다. -->
@@ -31,6 +39,11 @@
 		<beans:property name="viewClass"
 			value="org.springframework.web.servlet.view.tiles2.TilesView" />
 	</beans:bean>
+	
+	
+	
+	
+	
 	<!-- 4.지정된 패키지에서 스테레오타입4가지를 찾아 에너테이션이 붙은 클래스를 찾고 빈으로 등록한다. -->
 	<context:component-scan
 		base-package="com.attiWell" />
