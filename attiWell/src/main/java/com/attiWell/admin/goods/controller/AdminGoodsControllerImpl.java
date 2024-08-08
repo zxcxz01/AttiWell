@@ -60,6 +60,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		String [] tempDate=calcSearchPeriod(fixedSearchPeriod).split(",");
 		beginDate=tempDate[0];
 		endDate=tempDate[1];
+		
+		//이 메서드에서 dateMap을 직접적으로 이제 사용하지 않지만 일관성을 위해서 dateMap에 날짜 넣어줌
 		dateMap.put("beginDate", beginDate);
 		dateMap.put("endDate", endDate);
 		
@@ -112,6 +114,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		String imageFileName=null;
 		
 		
+		//정리) 폼에서 보낸 값들을 newGoodsMap에 저장
+		
 		Map newGoodsMap = new HashMap();
 		//multipartRequest.getParameterNames 반환 형태 -> enumeration(열거)
 		Enumeration enu=multipartRequest.getParameterNames();
@@ -122,12 +126,16 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			String value=multipartRequest.getParameter(name);
 			newGoodsMap.put(name,value);
 		}
+		
+		//정리)세션에 담긴 멤버 정보에서 멤버 ID를 추출
 		  //세션 생성해서 세션 객체에 담긴 memberinfo로 저장된 객체를 가져온다.
 		HttpSession session = multipartRequest.getSession();
 		MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
 		String reg_id = memberVO.getMember_id();
 		
-		// basecontroller의 upload 메서드 가져옴
+		
+		//정리) 이미지 파일 VO에 등록자 ID를 설정하고 이미지파일vo리스트에 추가 , 그 후 이미지파일 리스트 항목을  위에 선언한 newGoodsMap에 추가
+		// basecontroller의 upload 메서드 가져옴. basecontroller 의 upload메서드는 파일을 temp폴더에 저장한다!!!!
 		List<ImageFileVO> imageFileList =upload(multipartRequest);
 		if(imageFileList!= null && imageFileList.size()!=0) {
 			for(ImageFileVO imageFileVO : imageFileList) {
@@ -139,7 +147,10 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		String message = null;
 		ResponseEntity resEntity = null;
 		
-		//http요청 및 응답헤더 다룸
+		//http요청 및 응답헤더 다룸, 클라이언트에게 응답할 때 내용이 html형식이며 utf-8 인코딩을 사용함
+		/*정리) http폼 응답헤더 설정, service로 위에 newgoodsmap보냄 
+		 * 
+		 * */
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		try {
@@ -148,12 +159,19 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			if(imageFileList!=null && imageFileList.size()!=0) {
 				for(ImageFileVO  imageFileVO:imageFileList) {
 					imageFileName = imageFileVO.getFileName();
+					
+					//임시폴더를 거쳐서 가는 이유가 이미지 저장할때 본폴더에 저장할때 오류가 나면 본폴더 초기화해야할 수 도 있으니까
+					//그러면 원래 잘 저장되어있던 이미지도 다 날아가니까 우선 temp에 저장해놓고 문제 엎으면 목적지로 가게끔 한다.
+					
+					//File 클래스는 경로설정 하는데 사용 -> 아까 basecontroller의 upload메서드에서 temp폴더에 저장한 파일을 목적지 폴더로 옮긴다.
 					File srcFile = new File(CURR_IMAGE_REPO_PATH+"\\"+"temp"+"\\"+imageFileName);
 					File destDir = new File(CURR_IMAGE_REPO_PATH+"\\"+goods_id);
-					//파일 이미지 경로를 temp에서 goods_id인 폴더로 옮김
+					//파일 이미지 경로를 temp에서 goods_id인 폴더로 옮김 (아래 메서드에 의해 temp에 남아있는 파일은 삭제 됨)
 					FileUtils.moveFileToDirectory(srcFile, destDir,true);
 				}
 			}
+			
+			//성공적으로 완료했을시 성공 메시지 작성하고 원하는 jsp로 가게해줌
 			message= "<script>";
 			message += " alert('새상품을 추가했습니다.');";
 			message +=" location.href='"+multipartRequest.getContextPath()+"/admin/goods/addNewGoodsForm.do';";

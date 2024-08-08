@@ -20,6 +20,10 @@ import com.attiWell.goods.vo.ImageFileVO;
 import com.attiWell.order.vo.OrderVO;
 
 
+/* 중요!!!!!!!!!!! Transactional 어노테이션이 의미하는 바 
+클래스내 모든 메서드가 트랜잭션 내에 실행, 성공적으로 완료되거나 실패해서 롤백되거나 둘중하나
+이유 일관성, 안정성
+*/
 @Service("adminGoodsService")
 @Transactional(propagation=Propagation.REQUIRED)
 public class AdminGoodsServiceImpl implements AdminGoodsService {
