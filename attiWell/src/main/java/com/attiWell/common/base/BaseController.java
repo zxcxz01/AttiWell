@@ -29,16 +29,22 @@ public abstract class BaseController  {
    
    protected List<ImageFileVO> upload(MultipartHttpServletRequest multipartRequest) throws Exception{
       List<ImageFileVO> fileList= new ArrayList<ImageFileVO>();
+      // multipartRequest.getFileNames(); filename이 폼에서 사용자가 입력한 파일이름이다.
       Iterator<String> fileNames = multipartRequest.getFileNames();
       while(fileNames.hasNext()){
+    	  
+    	  //사용자가 입력한 파일이름
          ImageFileVO imageFileVO =new ImageFileVO();
          String fileName = fileNames.next();
          imageFileVO.setFileType(fileName);
+         
+         // multipartRequest.getFile(fileName); 실제 파일이름 저장
          MultipartFile mFile = multipartRequest.getFile(fileName);
          String originalFileName=mFile.getOriginalFilename();
          imageFileVO.setFileName(originalFileName);
          fileList.add(imageFileVO);
          
+         //File 클래스 사용해서 temp폴더에 실제 폴더 전송
          File file = new File(CURR_IMAGE_REPO_PATH +"\\"+ fileName);
          if(mFile.getSize()!=0){ //File Null Check
             if(! file.exists()){ //경로상에 파일이 존재하지 않을 경우
@@ -79,9 +85,11 @@ public abstract class BaseController  {
       String beginYear=null;
       String beginMonth=null;
       String beginDay=null;
+      // 두자리로 포맷
       DecimalFormat df = new DecimalFormat("00");
       Calendar cal=Calendar.getInstance();
       
+      //cal객체를 통해 현재 년월일 반환 
       endYear   = Integer.toString(cal.get(Calendar.YEAR));
       endMonth  = df.format(cal.get(Calendar.MONTH) + 1);
       endDay   = df.format(cal.get(Calendar.DATE));
@@ -103,6 +111,7 @@ public abstract class BaseController  {
          cal.add(cal.MONTH,-6);
       }
       
+      //현재 날짜에 사용자가 선택한 날짜를 빼서 시작날짜 구함
       beginYear   = Integer.toString(cal.get(Calendar.YEAR));
       beginMonth  = df.format(cal.get(Calendar.MONTH) + 1);
       beginDay   = df.format(cal.get(Calendar.DATE));

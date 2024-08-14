@@ -33,6 +33,8 @@ public class AdminGoodsServiceImpl implements AdminGoodsService {
 	@Override
 	public int addNewGoods(Map newGoodsMap) throws Exception{
 		int goods_id = adminGoodsDAO.insertNewGoods(newGoodsMap);
+		
+		// newGoodsMap.get("imageFileList")는  newgoodsmap에 저장할때 타입을 ArrayList로 해줬으니 그대로 반환
 		ArrayList<ImageFileVO> imageFileList = (ArrayList)newGoodsMap.get("imageFileList");
 		for(ImageFileVO imageFileVO : imageFileList) {
 			imageFileVO.setGoods_id(goods_id);

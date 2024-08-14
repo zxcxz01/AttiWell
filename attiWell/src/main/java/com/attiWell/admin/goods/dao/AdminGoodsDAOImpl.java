@@ -18,12 +18,15 @@ public class AdminGoodsDAOImpl  implements AdminGoodsDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
+	// newGoodsMap은 제너럴 타입 정해져 있지 않음 -> object반환 하지만 object->int로 변환이 불가능하므로 String-> int형으로 반환
+	// 시퀀스로 자동으로 goods_id생성해서 반환 
 	@Override
 	public int insertNewGoods(Map newGoodsMap) throws DataAccessException {
 		sqlSession.insert("mapper.admin.goods.insertNewGoods",newGoodsMap);
 		return Integer.parseInt((String)newGoodsMap.get("goods_id"));
 	}
 	
+	//파일리스트안에 있는 ImageFileVO객체들 반복문 돌려서 DB에 삽입
 	@Override
 	public void insertGoodsImageFile(List fileList)  throws DataAccessException {
 		for(int i=0; i<fileList.size();i++){
@@ -62,15 +65,15 @@ public class AdminGoodsDAOImpl  implements AdminGoodsDAO{
 		sqlSession.delete("mapper.admin.goods.deleteGoodsImage",image_id);
 	}
 	
-	@Override
-	public void deleteGoodsImage(List fileList) throws DataAccessException{
-		int image_id;
-		for(int i=0; i<fileList.size();i++){
-			ImageFileVO bean=(ImageFileVO) fileList.get(i);
-			image_id=bean.getImage_id();
-			sqlSession.delete("mapper.admin.goods.deleteGoodsImage",image_id);	
-		}
-	}
+//	@Override
+//	public void deleteGoodsImage(List fileList) throws DataAccessException{
+//		int image_id;
+//		for(int i=0; i<fileList.size();i++){
+//			ImageFileVO bean=(ImageFileVO) fileList.get(i);
+//			image_id=bean.getImage_id();
+//			sqlSession.delete("mapper.admin.goods.deleteGoodsImage",image_id);	
+//		}
+//	}
 
 	@Override
 	public List<OrderVO> selectOrderGoodsList(Map condMap) throws DataAccessException{

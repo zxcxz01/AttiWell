@@ -143,7 +143,7 @@
       } else if (attribute == 'recommendation') {
          value = frm_mod_goods.recommendation.value;
       }
-
+	//json,xml로 안보내고 일반 형식으로 보냄
       $.ajax({
          type : "post",
          async : false, //false인 경우 동기식으로 처리한다.
@@ -171,11 +171,14 @@
       }); //end ajax   
    }
 
+   /* preview는 사용자가 정한 매개변수 이름 preview1,2,3 다 받을 수 있다. preview = priview1, preview2 이런식으로 -> 자바랑 달라서 헷갈림 주의 */
    function readURL(input, preview) {
       //  alert(preview);
       if (input.files && input.files[0]) {
+    	  /* FileReader는 파일을 읽게 해준다.  */
          var reader = new FileReader();
          reader.onload = function(e) {
+        	 /* privew라는 id의 src속성에서 e.target.result를 사용하여 이미지 미리보기해줌  */
             $('#' + preview).attr('src', e.target.result);
          }
          reader.readAsDataURL(input.files[0]);
@@ -434,11 +437,13 @@
 				 <table  class="table">
 					 <tr>
 					<c:forEach var="item" items="${imageFileList }"  varStatus="itemNum">
+					<!-- varStatus="itemNum 이걸 객체처럼 생각해서 객체의 메서드 count를 사용하면 반복문이 진행될때마다 1씩증가된다. -->
 			        <c:choose>
 			            <c:when test="${item.fileType=='main_image' }">
 			              <tr>
 						    <td class="fixed_join">메인 이미지</td>
-						    <td>
+						    <td><!--input type="file"이 파일선택 버튼을 자동으로 만들어 준다.  -->
+						    <!-- readURL(this,'preview${itemNum.count}'); this는 input을 표현한것 input으로 해도 무관, preview${itemNum.count} 는 jstl 반복문 객체를 사용자가 지정한 이름인 preview랑 결합하여 함수에 인자로 전달(id역할) -->
 							  <input type="file"  id="main_image"  name="main_image"  onchange="readURL(this,'preview${itemNum.count}');" />
 						      <%-- <input type="text" id="image_id${itemNum.count }"  value="${item.fileName }" disabled  /> --%>
 							  <input type="hidden"  name="image_id" value="${item.image_id}"  />

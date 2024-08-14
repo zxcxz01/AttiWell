@@ -115,7 +115,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		
 		
 		//정리) 폼에서 보낸 값들을 newGoodsMap에 저장
-		
+		// HashMap 제너럴 타입 설정안해주면 기본 반환형식 object
 		Map newGoodsMap = new HashMap();
 		//multipartRequest.getParameterNames 반환 형태 -> enumeration(열거)
 		Enumeration enu=multipartRequest.getParameterNames();
@@ -245,6 +245,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		response.setContentType("text/html; charset=utf-8");
 		String imageFileName=null;
 		
+		
+		// FORM에서 입력 값들 다 받아 온다.
 		Map goodsMap = new HashMap();
 		Enumeration enu=multipartRequest.getParameterNames();
 		while(enu.hasMoreElements()){
@@ -253,17 +255,24 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			goodsMap.put(name,value);
 		}
 		
+		
+		// 세션에서 사용자 정보 받아와서 MEMBER_ID 가져온다.
 		HttpSession session = multipartRequest.getSession();
 		MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
 		String reg_id = memberVO.getMember_id();
 		
+		//정리) 이미지 파일 VO에 등록자 ID를 설정하고 이미지파일vo리스트에 추가 , 그 후 이미지파일 리스트 항목을  위에 선언한 newGoodsMap에 추가
+		// basecontroller의 upload 메서드 가져옴. basecontroller 의 upload메서드는 파일을 temp폴더에 저장한다!!!!
 		List<ImageFileVO> imageFileList=null;
 		int goods_id=0;
 		int image_id=0;
 		try {
+			//basecontroller에서 사용자가 입력한 파일이름, 실제 파일이름 저장한 imagevo반환
+			//imageFileList 이 항목에 데이터가들어가 있으면 아무 데이터 입력하지 않아도 imageFileVO로 데이터 들어감
 			imageFileList =upload(multipartRequest);
 			if(imageFileList!= null && imageFileList.size()!=0) {
 				for(ImageFileVO imageFileVO : imageFileList) {
+					//goodsmap에 저장한 데이터 불러와서 ImageFileVO에 넣는다.
 					goods_id = Integer.parseInt((String)goodsMap.get("goods_id"));
 					image_id = Integer.parseInt((String)goodsMap.get("image_id"));
 					imageFileVO.setGoods_id(goods_id);
@@ -272,6 +281,8 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 				}
 				
 			    adminGoodsService.modifyGoodsImage(imageFileList);
+			    
+			    //temp에있던 파일 실제 저장경로로 보낸다.
 				for(ImageFileVO  imageFileVO:imageFileList) {
 					imageFileName = imageFileVO.getFileName();
 					File srcFile = new File(CURR_IMAGE_REPO_PATH+"\\"+"temp"+"\\"+imageFileName);
@@ -279,6 +290,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 					FileUtils.moveFileToDirectory(srcFile, destDir,true);
 				}
 			}
+			//이미지 파일리스트가 없을 시 temp에 있는 사진 지운다.
 		}catch(Exception e) {
 			if(imageFileList!=null && imageFileList.size()!=0) {
 				for(ImageFileVO  imageFileVO:imageFileList) {
@@ -306,6 +318,7 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 		String imageFileName=null;
 		
 		Map goodsMap = new HashMap();
+		// FORM에서 입력 값들 다 받아 온다.
 		Enumeration enu=multipartRequest.getParameterNames();
 		while(enu.hasMoreElements()){
 			String name=(String)enu.nextElement();
@@ -313,10 +326,14 @@ public class AdminGoodsControllerImpl extends BaseController  implements AdminGo
 			goodsMap.put(name,value);
 		}
 		
+		// 세션에서 사용자 정보 받아와서 MEMBER_ID 가져온다.
 		HttpSession session = multipartRequest.getSession();
 		MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
 		String reg_id = memberVO.getMember_id();
 		
+		
+		//정리) 이미지 파일 VO에 등록자 ID를 설정하고 이미지파일vo리스트에 추가 , 그 후 이미지파일 리스트 항목을  위에 선언한 newGoodsMap에 추가
+		// basecontroller의 upload 메서드 가져옴. basecontroller 의 upload메서드는 파일을 temp폴더에 저장한다!!!!
 		List<ImageFileVO> imageFileList=null;
 		int goods_id=0;
 		try {
