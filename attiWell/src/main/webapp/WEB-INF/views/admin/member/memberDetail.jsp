@@ -141,6 +141,8 @@ tr h2 {
 	</c:otherwise>
 </c:choose>
 <script>
+
+//Daum 우편번호 API를 사용해 사용자가 쉽게 우편번호와 주소를 검색하고 선택할 수 있게 해준다. -> 사용자가 주소를 선택하면 해당 정보를 HTML 폼의 입력 필드에 자동으로 채워주는 역할
 	function execDaumPostcode() {
 		new daum.Postcode(
 				{
@@ -201,6 +203,9 @@ tr h2 {
 		var value;
 		// alert(member_id);
 		// alert("mod_type:"+mod_type);
+		
+		// frm_mod_member는 폼이름
+		
 		var frm_mod_member = document.frm_mod_member;
 		if (mod_type == 'member_pw') {
 
@@ -208,6 +213,8 @@ tr h2 {
 
 			console.log(frm_mod_member.member_pw.value);
 			//alert("member_pw:"+value);
+			
+			//폼의 radio name인  member_gender에 접근해서 member_gender 반복문 돌려서 만약 체크 되어있다면 값 value에 저장 
 		} else if (mod_type == 'member_gender') {
 			var member_gender = frm_mod_member.member_gender;
 			for (var i = 0; i<member_gender.length; i++) {
@@ -313,7 +320,8 @@ tr h2 {
 			value = value_zipcode + "," + value_roadAddress + ","
 					+ value_jibunAddress + "," + value_namujiAddress;
 		}
-
+//ajax로 위에서 member_id, mode_type과 그에따른 value값을 서버로 보냄
+// 동기 비동기의 개념과 java, resouce에 차이에따른 서버 재실행 과 구분 잘할 것
 		$
 				.ajax({
 					type : "post",

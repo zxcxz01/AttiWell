@@ -37,7 +37,7 @@
 <select id="listMember" resultMap="memberResult"   parameterType="java.util.HashMap"  >
 <!-- search_type : 검색기능(현재 사용x), begin endDate사이에 있는 날짜만 조회,  -->
       <!--데이터 행을 page,section에 따라 반환
-ex section 2 page 1 이면 111부터 120까지 행 반환  -->>
+ex section 2 page 1 이면 111부터 120까지 행 반환  -->
         select * from (
              select rowNum as recNum,t.*
                 from (

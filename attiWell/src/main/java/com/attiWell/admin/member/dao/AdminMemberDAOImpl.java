@@ -21,6 +21,7 @@ public class AdminMemberDAOImpl  implements AdminMemberDAO{
 		return memberList;
 	}
 	
+//	selectOne : 단일행 조회
 	public MemberVO memberDetail(String member_id) throws DataAccessException{
 		MemberVO memberBean=(MemberVO)sqlSession.selectOne("mapper.admin.member.memberDetail",member_id);
 		return memberBean;

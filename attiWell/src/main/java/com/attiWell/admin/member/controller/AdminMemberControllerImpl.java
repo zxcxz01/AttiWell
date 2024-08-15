@@ -76,7 +76,7 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 //		mav.addObject("endYear",endDate2[0]);
 //		mav.addObject("endMonth",endDate2[1]);
 //		mav.addObject("endDay",endDate2[2]);
-//		
+		
 		mav.addObject("section", section);
 		mav.addObject("pageNum", pageNum);
 		return mav;
@@ -94,6 +94,7 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 	
 	@RequestMapping(value="/modifyMemberInfo.do" ,method={RequestMethod.POST,RequestMethod.GET})
 	public void modifyMemberInfo(HttpServletRequest request, HttpServletResponse response)  throws Exception{
+		
 		HashMap<String,String> memberMap=new HashMap<String,String>();
 		String val[]=null;
 		String val2 = null;
@@ -152,6 +153,8 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 		memberMap.put("member_id", member_id);
 		
 		adminMemberService.modifyMemberInfo(memberMap);
+		//ajax 에서 mod_success에 설정한 메시지 보여줌 , 위에 PrintWriter pw=response.getWriter(); 코드있음
+		// jsp에서 ajax 동기로 설정했음 따라서 DB수정이 잘 되고나서 ajax 성공메시지 띄우는거임 -> 동기로 설정해준 이유
 		pw.print("mod_success");
 		pw.close();		
 		System.out.println("HashMap 내용 확인: " + memberMap.toString());
@@ -168,6 +171,8 @@ public class AdminMemberControllerImpl extends BaseController  implements AdminM
 		memberMap.put("member_id", member_id);
 		
 		adminMemberService.modifyMemberInfo(memberMap);
+		
+		//회원 삭제 작업후 원하는 url로 다시 리다이렉트 -> 안전하게 작업후 view이동
 		mav.setViewName("redirect:/admin/member/adminMemberMain.do");
 		return mav;
 		
