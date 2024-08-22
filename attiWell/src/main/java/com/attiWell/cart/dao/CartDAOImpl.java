@@ -44,7 +44,8 @@ public class CartDAOImpl  implements  CartDAO{
 	public void deleteCartGoods(int cart_id) throws DataAccessException{
 		sqlSession.delete("mapper.cart.deleteCartGoods",cart_id);
 	}
-
+	
+	// cart_id최대값 + 1 반환
 	private int selectMaxCartId() throws DataAccessException{
 		int cart_id =sqlSession.selectOne("mapper.cart.selectMaxCartId");
 		return cart_id;

@@ -45,8 +45,11 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 	public Map orderDetail(int order_id) throws Exception{
 		Map orderMap=new HashMap();
 		ArrayList<OrderVO> orderList =adminOrderDAO.selectOrderDetail(order_id);
+		// 현재 List에는 order_id에 맞는 하나의 ordervo밖에 없음 이걸 그냥 deliveryInfo에 넣어준거임
 		OrderVO deliveryInfo=(OrderVO)orderList.get(0);
+		// deliveryInfo의 필드에 member_id필드 있음 이걸 꺼내줌
 		String member_id=(String)deliveryInfo.getMember_id();
+		// member_id를 가지고 member_id조건의 memberVO반환
 		MemberVO orderer=adminOrderDAO.selectOrderer(member_id);
 		orderMap.put("orderList",orderList);
 		orderMap.put("deliveryInfo",deliveryInfo);

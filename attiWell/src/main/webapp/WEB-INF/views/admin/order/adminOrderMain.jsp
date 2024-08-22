@@ -244,8 +244,11 @@ function  calcPeriod(search_period){
 }
 
 function fn_modify_order_state(order_id,select_id){
+	//select id 가져와서
    var s_delivery_state=document.getElementById(select_id);
+	// select 에서 몇번재 option이 선택되었는지 가져와서
     var index = s_delivery_state.selectedIndex;
+	// value 값 가져온다.
     var value = s_delivery_state[index].value;
     //console.log("value: "+value );
     
@@ -363,6 +366,7 @@ function fn_detail_order(order_id){
            </tr>
     </c:when>
     <c:otherwise>
+    <!--newOrderList안에있는 orderVO를 item으로 하고 반복문 돌림  -->
      <c:forEach var="item" items="${newOrderList}" varStatus="i">
         <c:choose>
           <c:when test="${item.order_id != pre_order_id }">  
@@ -420,6 +424,9 @@ function fn_detail_order(order_id){
               </c:otherwise>
             </c:choose>   
          <!--    <td width=10%  class="colorChange"> -->
+         <!--ordervo끼리 구분해주기 위해서 select name 뒤에 표현어로 붙여줌  -->
+         <!--id="s_delivery_state1"은 자바스크립트나 CSS에서 해당 요소를 특정하기 위해 사용되고
+			name="s_delivery_state1"은 폼을 서버로 전송할 때, 해당 선택된 옵션의 값을 서버로 전달하기 위해 사용된다.  -->
              <select name="s_delivery_state${i.index }"  class="custom-select" id="s_delivery_state${i.index }" >
              <c:choose>
                <c:when test="${item.delivery_state=='delivery_prepared' }">
@@ -460,6 +467,7 @@ function fn_detail_order(order_id){
                </c:choose>
              </select> 
             </td>
+            <!-- item의 order_id랑 같은 item의 select태그 보냄(select끼리 구분하는 id속성으로)  -->
             <td width=10% style="vertical-align: middle;">
               <input  type="button" value="배송수정"  onClick="fn_modify_order_state('${item.order_id}','s_delivery_state${i.index}')" class="btn btn-primary" 
               style="background-color: #1b7340; border: none; "/>

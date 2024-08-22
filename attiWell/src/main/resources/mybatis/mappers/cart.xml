@@ -49,7 +49,8 @@
       </foreach>
       order by g.goods_id desc
    </select>
-
+<!-- goods_id, member_id 조건에 맞는 개수를 샌다 , decode : count가 0이면 false 0이아니면 true  -->
+ <!-- decode : 조건에 따라 다른 값 반환 -->
    <select id="selectCountInCart" resultType="String" parameterType="cartVO">
        <![CDATA[
           select decode(count(*), 0, 'false', 'true') from t_shopping_cart
@@ -87,7 +88,7 @@
          where cart_id=#{cart_id}
        ]]>
    </delete>
-   
+   <!-- nvl : db가 null이면 0반환 , 보통 cart_id의 최댓값에다 1 더해서 반환  -->
    <select id="selectMaxCartId" resultType="int">
        <![CDATA[
          select nvl(max(cart_id), 0) + 1 from t_shopping_cart 

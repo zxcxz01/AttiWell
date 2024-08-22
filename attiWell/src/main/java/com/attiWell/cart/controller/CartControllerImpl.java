@@ -47,6 +47,8 @@ public class CartControllerImpl extends BaseController implements CartController
 		mav.addObject("cartMap", cartMap);
 		return mav;
 	}
+	
+	// 반환 값이 뷰로 해석되지 않고 http응답으로 한다.
 	@RequestMapping(value="/addGoodsInCart.do" ,method = RequestMethod.POST,produces = "application/text; charset=utf8")
 	public  @ResponseBody String addGoodsInCart(@RequestParam("goods_id") int goods_id,
 			 							@RequestParam("orderGoodsQty") int orderGoodsQty,

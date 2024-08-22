@@ -60,6 +60,7 @@ public class AdminOrderControllerImpl extends BaseController  implements AdminOr
 		dateMap.put("endDate", endDate);
 		
 		
+		//conditionMap -> 조건나타내야되서 이렇게 이름지음
 		HashMap<String,Object> condMap=new HashMap<String,Object>();
 		if(section== null) {
 			section = "1";
